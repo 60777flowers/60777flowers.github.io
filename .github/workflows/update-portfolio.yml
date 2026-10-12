@@ -6,6 +6,11 @@ on:
     - cron: '35 7 * * 1-5'
     - cron: '0 12 * * 1-5'
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: '演练模式：只抓行情并打印结果，不写入、不推送'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -14,9 +19,9 @@ jobs:
   update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -29,4 +34,12 @@ jobs:
           git config user.email "actions@github.com"
 
       - name: Update portfolio NAV
-        run: python scripts/auto_update.py --push
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "== 演练模式：只抓行情，不写入 =="
+            python scripts/auto_update.py --dry-run --force
+          else
+            python scripts/auto_update.py --push
+          fi
