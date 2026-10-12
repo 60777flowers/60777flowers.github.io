@@ -27,7 +27,7 @@
 <header class="hero container">
   <img class="avatar" src="img/avatar.jpg" alt="头像">
   <h1>杨凯盛</h1>
-  <div class="subtitle">南京大学 金融工程 · 香港大学 金融硕士（2027）</div>
+  <div class="subtitle">南京大学 金融工程 · 辅修计算机科学与技术<br>香港大学 金融硕士（2027）</div>
   <p class="tagline">热爱技术与投资，用代码改善金融工作流，用文字记录生活与思考。</p>
   <div class="social-links">
     <a href="https://github.com/60777flowers" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
@@ -79,7 +79,7 @@
       <a class="more" href="portfolio.html">查看详情 →</a>
     </div>
     <div class="card portfolio-snapshot" id="portfolio-snapshot">
-      <div class="label">当前组合净值（自 2026-10-12 起算）</div>
+      <div class="label">当前组合净值（自 <span id="pf-base">—</span> 起算）</div>
       <div class="nav-value" id="pf-nav">—</div>
       <div id="pf-change" style="font-size:1rem;margin-bottom:14px">—</div>
       <div id="pf-holdings" style="text-align:left;max-width:480px;margin:0 auto"></div>
@@ -100,6 +100,7 @@ fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json()
   var hist = d.nav_history;
   var latest = hist[hist.length - 1];
   var prev = hist.length > 1 ? hist[hist.length - 2] : null;
+  document.getElementById("pf-base").textContent = d.base_date;
   document.getElementById("pf-nav").textContent = Number(latest.nav).toFixed(4);
   var el = document.getElementById("pf-change");
   if (prev && prev.nav) {
@@ -107,7 +108,7 @@ fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json()
     el.textContent = fmtPct(chg) + "（较上一记录日）";
     el.className = chg >= 0 ? "up" : "down";
   } else {
-    el.textContent = "基期 · 净值 1.0000";
+    el.textContent = "基期 · 净值 " + fmtNav(d.base_nav);
     el.className = "up";
   }
   document.getElementById("pf-holdings").innerHTML = d.holdings.map(function (h) {

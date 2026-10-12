@@ -83,6 +83,24 @@ def fetch_quote(qt_code):
     return fetch_tencent(qt_code) or fetch_sina(qt_code)
 
 
+def git_push():
+    """提交并推送数据文件（无改动时跳过，避免空提交导致 CI 失败）"""
+    rel = str(DATA_FILE.relative_to(ROOT))
+
+    def run(c):
+        return subprocess.run(c, cwd=ROOT)
+
+    run(["git", "add", rel])
+    if run(["git", "diff", "--cached", "--quiet"]).returncode == 0:
+        print("[跳过] 数据无变化，无需提交")
+        return
+    if run(["git", "commit", "-m", f"update portfolio {datetime.date.today().isoformat()}"]).returncode != 0:
+        sys.exit("错误: git commit 失败")
+    if run(["git", "push"]).returncode != 0:
+        sys.exit("错误: git push 失败")
+    print("[OK] 已提交并推送到 GitHub，稍后 Pages 会自动更新")
+
+
 def main():
     args = sys.argv[1:]
     dry = "--dry-run" in args
@@ -146,13 +164,11 @@ def main():
 
     cmd = [sys.executable, str(ROOT / "scripts" / "update_portfolio.py"),
            "record", "--change", f"{port_ret:.6f}"]
-    if push:
-        cmd.append("--push")
     r = subprocess.run(cmd, cwd=ROOT)
     if r.returncode != 0:
         sys.exit(r.returncode)
 
-    # 写入快照（record 成功后）
+    # 写入快照（record 成功后，必须在 push 之前，否则快照不会进入提交）
     data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
     snaps = [s for s in data.get("snapshots", []) if s["date"] != today]
     snaps.append(snap)
@@ -160,6 +176,9 @@ def main():
     data["snapshots"] = snaps
     DATA_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("[OK] 价格快照已存档")
+
+    if push:
+        git_push()
 
 
 if __name__ == "__main__":

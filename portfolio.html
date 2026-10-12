@@ -26,7 +26,7 @@
 
 <div class="container">
   <h1 class="page-title">我的投资组合</h1>
-  <p class="page-sub">基期 <span id="pf-base"></span> · 净值 1.0000 对应 2026-10-09 收盘价 51.00 元 · 复权计算 · 不构成投资建议</p>
+  <p class="page-sub" id="pf-sub">—</p>
 
   <div class="stats-grid reveal">
     <div class="stat">
@@ -86,7 +86,11 @@
 fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   var hist = d.nav_history;
   var latest = hist[hist.length - 1];
-  document.getElementById("pf-base").textContent = d.base_date;
+  document.getElementById("pf-sub").textContent = "基期 " + d.base_date + " · 净值 " + fmtNav(d.base_nav) +
+    (d.base_price != null
+      ? " 对应 " + (d.base_price_note ? d.base_price_note + " " : "") + Number(d.base_price).toFixed(2) + " 元"
+      : "") +
+    " · 复权计算 · 不构成投资建议";
   document.getElementById("pf-nav").textContent = fmtNav(latest.nav);
   document.getElementById("pf-date").textContent = latest.date;
   document.getElementById("pf-updated").textContent = d.updated_at;
