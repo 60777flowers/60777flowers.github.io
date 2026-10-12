@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>关于我 | 杨凯盛</title>
+<meta name="description" content="杨凯盛的自我介绍：一个喜欢折腾的金融学生。">
+<link rel="icon" href="img/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="index.html">杨凯盛</a>
+    <div class="nav-links">
+      <a data-page="index.html" href="index.html">首页</a>
+      <a data-page="about.html" href="about.html">关于我</a>
+      <a data-page="blog.html" href="blog.html">博客文章</a>
+      <a data-page="portfolio.html" href="portfolio.html">投资组合</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="切换主题"><i class="fas fa-adjust"></i></button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">关于我</h1>
+  <p class="page-sub">Hi，很高兴你点进这一页 ：）</p>
+
+  <div class="post-body reveal" style="margin-bottom:36px">
+    <p>我是杨凯盛，甘肃人，本科在南京大学读金融工程，顺手辅修了计算机，中间去耶鲁交换了一个夏天，
+    现在在香港大学念金融硕士，2027 年毕业。</p>
+    <p>平时喜欢折腾各种工具：写 Python 脚本偷懒、搭 AI 工作流、在量化平台上跑策略，
+    也剪视频、看动画（强烈推荐 Rick and Morty 和双城之战，见<a href="blog.html">博客</a>）、玩开源。</p>
+    <p>做这个博客没有什么宏大的目标，就是记录一些生活碎片，顺便认识一些有意思的人。
+    如果你也对技术、投资、或者生活的各种奇思妙想感兴趣，欢迎<a href="mailto:kaisheng-yang@smail.nju.edu.cn">发邮件</a>找我聊天，
+    我一般都会回。</p>
+  </div>
+
+  <!-- 实习经历 -->
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-briefcase"></i>实习过的地方</h2>
+    <div class="org-list">
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/cxmt.ico" alt="长鑫科技">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">长鑫科技</span>
+            <span class="org-en">CXMT · 688825.SH</span>
+            <span class="org-dept">战略投资部</span>
+            <span class="org-date">2026.07 – 2026.10</span>
+          </div>
+          <div class="org-desc">看半导体项目，写尽调代码，顺便给公司搭了个 multi-agent 尽调流水线。</div>
+        </div>
+      </div>
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/citics.ico" alt="中信证券">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">中信证券</span>
+            <span class="org-en">CITIC Securities</span>
+            <span class="org-dept">投资银行部</span>
+            <span class="org-date">2026.03 – 2026.05</span>
+          </div>
+          <div class="org-desc">股权、债融、REITs 都碰了碰，用 LLM 把好多dirty work 自动化了。</div>
+        </div>
+      </div>
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/xyzq.ico" alt="兴业证券">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">兴业证券</span>
+            <span class="org-en">Industrial Securities</span>
+            <span class="org-dept">投资银行部 · IPO 项目组</span>
+            <span class="org-date">2026.01 – 2026.03</span>
+          </div>
+          <div class="org-desc">参与一单苏州企业的挂牌，写了些脚本处理非标数据，被夸了。</div>
+        </div>
+      </div>
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/ebtrust.ico" alt="光大信托">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">光大信托</span>
+            <span class="org-en">Everbright Trust</span>
+            <span class="org-dept">固定收益部</span>
+            <span class="org-date">2024.01 – 2024.02</span>
+          </div>
+          <div class="org-desc">第一份金融实习，帮信托经理写 Python 处理 Excel，从此走上"金融+代码"不归路。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 论文 -->
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-file-lines"></i>写过的论文</h2>
+    <div class="paper-row">
+      <div class="p-title">Climate Risk Attention and Excess Returns of Actively Managed Funds</div>
+      <div class="p-meta">Journal of Business Economics and Management（SSCI, JCR 经济学一区）· 第一作者 · 即将发表</div>
+      <a class="p-link" href="https://doi.org/10.3846/jbem.2026.28069" target="_blank" rel="noopener">
+        <i class="fas fa-arrow-up-right-from-square"></i> https://doi.org/10.3846/jbem.2026.28069
+      </a>
+    </div>
+    <div class="paper-row">
+      <div class="p-title">Multivariate Ensemble Prediction Methods Integrating Random Forest Regression and ARIMA Model</div>
+      <div class="p-meta">ICISCAE 2025（EI / CPCI 检索）· 第一作者 · 已发表</div>
+      <a class="p-link" href="https://ieeexplore.ieee.org/search/searchresult.jsp?queryText=Multivariate%20Ensemble%20Prediction%20Methods%20Integrating%20Random%20Forest%20Regression%20and%20ARIMA%20Model" target="_blank" rel="noopener">
+        <i class="fas fa-arrow-up-right-from-square"></i> IEEE Xplore 检索页
+      </a>
+    </div>
+  </div>
+
+  <!-- 创业 -->
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-rocket"></i>创过的业</h2>
+    <div class="org-list">
+      <div class="org-row">
+        <div class="org-logo" style="display:flex;align-items:center;justify-content:center;background:var(--grad);color:#fff;font-weight:800;font-size:1.2rem;border-radius:12px">M</div>
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">南京轻影智塑</span>
+            <span class="org-en">MaterializeEZ</span>
+            <span class="org-dept">联合创始人 & 商业负责人</span>
+            <span class="org-date">2023 – 2025</span>
+          </div>
+          <div class="org-desc">3D 打相关的小生意，拿过互联网+省金奖和国铜，和华为、南京城墙博物馆合作过，营收过了百万。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 教育背景 -->
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-graduation-cap"></i>上过的学</h2>
+    <div class="org-list">
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/hku.png" alt="香港大学">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">香港大学</span>
+            <span class="org-en">The University of Hong Kong</span>
+            <span class="org-dept">金融理学硕士</span>
+            <span class="org-date">2026 – 2027</span>
+          </div>
+        </div>
+      </div>
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/nju.png" alt="南京大学">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">南京大学</span>
+            <span class="org-en">Nanjing University</span>
+            <span class="org-dept">金融工程学士 · 辅修计算机</span>
+            <span class="org-date">2022 – 2026</span>
+          </div>
+        </div>
+      </div>
+      <div class="org-row">
+        <img class="org-logo" src="img/logos/yale.ico" alt="耶鲁大学">
+        <div class="org-body">
+          <div class="org-head">
+            <span class="org-name">耶鲁大学</span>
+            <span class="org-en">Yale University</span>
+            <span class="org-dept">暑期交换 · 博弈论 / 政治哲学</span>
+            <span class="org-date">2024 夏</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-map-location-dot"></i>我的一些标签</h2>
+    <div class="chips">
+      <span class="chip">金融工程</span>
+      <span class="chip">Python</span>
+      <span class="chip">量化</span>
+      <span class="chip">AI / LLM</span>
+      <span class="chip">半导体投资</span>
+      <span class="chip">开源</span>
+      <span class="chip">剪辑</span>
+      <span class="chip">动画</span>
+      <span class="chip">写点字</span>
+    </div>
+  </div>
+
+  <div class="resume-block reveal">
+    <h2><i class="fas fa-id-card"></i>找我</h2>
+    <ul style="margin-left:20px;color:var(--text-dim);font-size:.95rem">
+      <li><i class="fab fa-github"></i> GitHub：<a href="https://github.com/60777flowers" target="_blank">60777flowers</a></li>
+      <li><i class="fas fa-envelope"></i> Email：<a href="mailto:kaisheng-yang@smail.nju.edu.cn">kaisheng-yang@smail.nju.edu.cn</a></li>
+      <li><img class="social-svg" src="img/xueqiu.svg" alt="雪球"> 雪球：<a href="https://xueqiu.com/u/1467248089" target="_blank">我的雪球主页</a></li>
+    </ul>
+  </div>
+
+  <div style="margin-bottom:56px">
+    <a href="index.html">← 返回首页</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">© 2022 - <span id="year"></span> 杨凯盛 · Powered by GitHub Pages</div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

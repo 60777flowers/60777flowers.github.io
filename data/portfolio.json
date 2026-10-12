@@ -1,0 +1,30 @@
+{
+  "portfolio_name": "杨凯盛的个人投资组合",
+  "base_date": "2026-10-12",
+  "base_nav": 1.0,
+  "base_price": 51.0,
+  "base_price_note": "2026-10-09 收盘价（基期上一交易日）",
+  "currency": "CNY",
+  "updated_at": "2026-10-12",
+  "holdings": [
+    {
+      "name": "长鑫科技",
+      "en_name": "CXMT",
+      "ticker": "688825.SH",
+      "weight": 1.0,
+      "note": "半导体存储"
+    }
+  ],
+  "nav_history": [
+    {
+      "date": "2026-10-12",
+      "nav": 1.0
+    }
+  ],
+  "price_history": [
+    {
+      "date": "2026-10-12",
+      "price": 51.0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>博客文章 | 杨凯盛</title>
+<meta name="description" content="杨凯盛的博客文章：回忆录、软件分享、影视分享。">
+<link rel="icon" href="img/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="index.html">杨凯盛</a>
+    <div class="nav-links">
+      <a data-page="index.html" href="index.html">首页</a>
+      <a data-page="about.html" href="about.html">关于我</a>
+      <a data-page="blog.html" href="blog.html">博客文章</a>
+      <a data-page="portfolio.html" href="portfolio.html">投资组合</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="切换主题"><i class="fas fa-adjust"></i></button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">博客文章</h1>
+  <p class="page-sub">共 <span id="post-count"></span> 篇 · 记录生活、分享美好</p>
+
+  <div class="grid grid-2" id="post-cards" style="margin-bottom:56px"></div>
+</div>
+
+<footer class="footer">
+  <div class="container">© 2022 - <span id="year"></span> 杨凯盛 · Powered by GitHub Pages</div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+renderPostCards("post-cards");
+document.getElementById("post-count").textContent = window.POSTS.length;
+</script>
+</body>
+</html>

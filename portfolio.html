@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的投资组合 | 杨凯盛</title>
+<meta name="description" content="杨凯盛的个人投资组合：持仓、净值走势与历史净值记录。">
+<link rel="icon" href="img/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="index.html">杨凯盛</a>
+    <div class="nav-links">
+      <a data-page="index.html" href="index.html">首页</a>
+      <a data-page="about.html" href="about.html">关于我</a>
+      <a data-page="blog.html" href="blog.html">博客文章</a>
+      <a data-page="portfolio.html" href="portfolio.html">投资组合</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="切换主题"><i class="fas fa-adjust"></i></button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <h1 class="page-title">我的投资组合</h1>
+  <p class="page-sub">基期 <span id="pf-base"></span> · 净值 1.0000 对应 2026-10-09 收盘价 51.00 元 · 复权计算 · 不构成投资建议</p>
+
+  <div class="stats-grid reveal">
+    <div class="stat">
+      <div class="s-label">最新净值</div>
+      <div class="s-value" id="pf-nav">—</div>
+    </div>
+    <div class="stat d1">
+      <div class="s-label">较基期收益</div>
+      <div class="s-value" id="pf-total">—</div>
+    </div>
+    <div class="stat d2">
+      <div class="s-label">较上一记录日</div>
+      <div class="s-value" id="pf-daily">—</div>
+    </div>
+    <div class="stat d3">
+      <div class="s-label">最新记录日</div>
+      <div class="s-value" id="pf-date" style="font-size:1.1rem">—</div>
+    </div>
+  </div>
+
+  <div class="chart-wrap reveal">
+    <h3><i class="fas fa-chart-line"></i> 净值走势</h3>
+    <div id="chart"></div>
+  </div>
+
+  <div class="chart-wrap reveal d1">
+    <h3><i class="fas fa-layer-group"></i> 当前持仓</h3>
+    <div id="holdings"></div>
+  </div>
+
+  <div class="chart-wrap reveal d2">
+    <h3><i class="fas fa-table-list"></i> 历史净值</h3>
+    <table class="hist">
+      <thead>
+        <tr><th>日期</th><th>净值</th><th>日涨跌幅</th><th>较基期</th></tr>
+      </thead>
+      <tbody id="hist-body"></tbody>
+    </table>
+  </div>
+
+  <p class="note">
+    <i class="fas fa-circle-info"></i>
+    数据接口：<code>data/portfolio.json</code>；更新方式（推荐按收盘价录入，自动处理分红送转复权）：
+    <code>python scripts/update_portfolio.py record --price 51.88</code>，除权日用 <code>--dividend</code> / <code>--split</code>，
+    详见仓库 README。数据由 <span id="pf-updated"></span> 更新。
+  </p>
+
+  <div style="margin:32px 0 56px"><a href="index.html">← 返回首页</a></div>
+</div>
+
+<footer class="footer">
+  <div class="container">© 2022 - <span id="year"></span> 杨凯盛 · Powered by GitHub Pages</div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
+  var hist = d.nav_history;
+  var latest = hist[hist.length - 1];
+  document.getElementById("pf-base").textContent = d.base_date;
+  document.getElementById("pf-nav").textContent = fmtNav(latest.nav);
+  document.getElementById("pf-date").textContent = latest.date;
+  document.getElementById("pf-updated").textContent = d.updated_at;
+
+  var total = (latest.nav / d.base_nav - 1) * 100;
+  var tEl = document.getElementById("pf-total");
+  tEl.textContent = fmtPct(total);
+  tEl.className = "s-value " + (total >= 0 ? "up" : "down");
+
+  var dEl = document.getElementById("pf-daily");
+  if (hist.length > 1) {
+    var prev = hist[hist.length - 2];
+    var chg = (latest.nav / prev.nav - 1) * 100;
+    dEl.textContent = fmtPct(chg);
+    dEl.className = "s-value " + (chg >= 0 ? "up" : "down");
+  } else {
+    dEl.textContent = "基期";
+    dEl.className = "s-value up";
+  }
+
+  // 持仓
+  document.getElementById("holdings").innerHTML = d.holdings.map(function (h) {
+    return '<div class="holding-row"><span><strong>' + h.name + "</strong>" +
+      (h.ticker ? "（" + h.ticker + "）" : (h.en_name ? "（" + h.en_name + "）" : "")) +
+      (h.note ? ' <span style="color:var(--text-dim);font-size:.85rem">' + h.note + "</span>" : "") +
+      "</span><span>" + (h.weight * 100).toFixed(1) + "%</span></div>";
+  }).join("");
+
+  // 历史表（倒序）
+  var rows = "";
+  for (var i = hist.length - 1; i >= 0; i--) {
+    var r = hist[i];
+    var dayChg = i > 0 ? (r.nav / hist[i - 1].nav - 1) * 100 : null;
+    var baseChg = (r.nav / d.base_nav - 1) * 100;
+    rows += "<tr><td>" + r.date + "</td><td>" + fmtNav(r.nav) + "</td><td>" +
+      (dayChg === null ? "—" : '<span class="' + (dayChg >= 0 ? "up" : "down") + '">' + fmtPct(dayChg) + "</span>") +
+      '</td><td><span class="' + (baseChg >= 0 ? "up" : "down") + '">' + fmtPct(baseChg) + "</span></td></tr>";
+  }
+  document.getElementById("hist-body").innerHTML = rows;
+
+  // SVG 净值曲线
+  drawChart(hist);
+});
+
+function drawChart(hist) {
+  var W = 920, H = 300, PAD = 46;
+  var div = document.getElementById("chart");
+  var navs = hist.map(function (r) { return r.nav; });
+  var min = Math.min.apply(null, navs), max = Math.max.apply(null, navs);
+  if (max - min < 1e-9) { max = min + 0.01; min = Math.max(0, min - 0.01); }
+  var pad = (max - min) * 0.12;
+  min -= pad; max += pad;
+  var xs = hist.map(function (_, i) {
+    return PAD + (hist.length === 1 ? 0 : (i / (hist.length - 1)) * (W - 2 * PAD));
+  });
+  var ys = navs.map(function (v) { return H - PAD - ((v - min) / (max - min)) * (H - 2 * PAD); });
+  var pts = xs.map(function (x, i) { return x + "," + ys[i]; }).join(" ");
+  var area = PAD + "," + (H - PAD) + " " + pts + " " + (W - PAD) + "," + (H - PAD);
+
+  var gridLines = "";
+  for (var g = 0; g <= 4; g++) {
+    var y = PAD + (g / 4) * (H - 2 * PAD);
+    var v = max - (g / 4) * (max - min);
+    var theme = document.documentElement.getAttribute("data-theme") === "light" ? "#d0d7de" : "#30363d";
+    var txt = document.documentElement.getAttribute("data-theme") === "light" ? "#656d76" : "#8b949e";
+    gridLines += '<line x1="' + PAD + '" y1="' + y + '" x2="' + (W - PAD) + '" y2="' + y + '" stroke="' + theme + '" stroke-width="1" stroke-dasharray="4 4"/>' +
+      '<text x="8" y="' + (y + 4) + '" font-size="11" fill="' + txt + '">' + v.toFixed(4) + "</text>";
+  }
+  var dots = xs.map(function (x, i) {
+    return '<circle cx="' + x + '" cy="' + ys[i] + '" r="4" fill="#58a6ff"><title>' + hist[i].date + " · " + fmtNav(hist[i].nav) + "</title></circle>";
+  }).join("");
+
+  div.innerHTML =
+    '<svg viewBox="0 0 ' + W + " " + H + '" style="width:100%;height:auto" xmlns="http://www.w3.org/2000/svg">' +
+    gridLines +
+    '<polygon points="' + area + '" fill="rgba(88,166,255,0.12)"/>' +
+    '<polyline points="' + pts + '" fill="none" stroke="#58a6ff" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>' +
+    dots + "</svg>";
+}
+</script>
+</body>
+</html>
