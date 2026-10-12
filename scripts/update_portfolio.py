@@ -103,6 +103,13 @@ def cmd_holding(args, data):
     if not args.holdings:
         sys.exit("错误: 请提供持仓，格式: 名称:权重[:行情代码]，如 \"长鑫科技:1.0:sh688825\"")
     old = {h["name"]: h for h in data.get("holdings", [])}
+    # 调仓历史存档：覆盖前归档当前持仓，便于日后重算/回溯
+    if data.get("holdings"):
+        import copy
+        data.setdefault("holding_history", []).append({
+            "changed_at": datetime.datetime.now().isoformat(timespec="seconds"),
+            "holdings": copy.deepcopy(data["holdings"]),
+        })
     holdings = []
     for item in args.holdings:
         parts = item.split(":")

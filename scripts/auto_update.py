@@ -97,10 +97,11 @@ def main():
 
     today = datetime.date.today().isoformat()
 
-    # 幂等: 当天已录入则跳过
+    # 幂等: 当天已有 auto 快照则跳过（快照=auto 成功运行的标志）
+    # 注意: 基期占位记录(无快照)会被当日真实收盘数据覆盖
     if not force:
-        if any(r["date"] == today for r in data.get("nav_history", [])):
-            print(f"[跳过] {today} 已有净值记录，无需重复更新（--force 可覆盖）")
+        if any(s["date"] == today for s in data.get("snapshots", [])):
+            print(f"[跳过] {today} 已有自动更新快照，无需重复更新（--force 可覆盖）")
             return
 
     # 抓取全部持仓行情
@@ -129,12 +130,15 @@ def main():
     port_ret *= 100
     print(f"[计算] 组合当日涨跌幅: {port_ret:+.4f}%")
 
-    # 价格快照（记录到 snapshots，仅作存档）
+    # 价格快照 + 持仓快照（含权重与代码，可用于日后重算净值）
+    import copy
     snap = {
         "date": today,
         "prices": {h["name"]: quotes[h["name"]]["price"] for h in traded},
+        "holdings": copy.deepcopy(holdings),
     }
-    print(f"[快照] {json.dumps(snap['prices'], ensure_ascii=False)}")
+    print(f"[快照] 价格: {json.dumps(snap['prices'], ensure_ascii=False)} | 持仓: "
+          + ", ".join(f"{h['name']} {h['weight']*100:.1f}%" for h in holdings))
 
     if dry:
         print(f"[演练] 将执行: record --change {port_ret:.4f}")
