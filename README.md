@@ -58,12 +58,36 @@ python scripts/update_portfolio.py record --nav 1.0250
 python scripts/update_portfolio.py record --price 51.88 --date 2026-10-13
 ```
 
-### 持仓管理
+### 持仓管理（调仓）
 
 ```bash
-# 全量更新持仓（已有持仓的 ticker 等字段会保留）
-python scripts/update_portfolio.py holding "长鑫科技:1.0"
+# 全量更新持仓（已有持仓的 ticker/note 等字段会保留）
+# 格式: 名称:权重[:行情代码]，行情代码用于每日自动更新（腾讯/新浪代码，如 sh688825、sz000001）
+python scripts/update_portfolio.py holding "长鑫科技:1.0:sh688825"
+
+# 调仓示例: 60% 长鑫 + 40% 茅台（无代码的持仓如"现金"视为当日收益 0）
+python scripts/update_portfolio.py holding "长鑫科技:0.6:sh688825" "贵州茅台:0.4:sh600519"
 ```
+
+## 每日自动更新（GitHub Actions）
+
+已配置 `.github/workflows/update-portfolio.yml`：**每个交易日北京时间 15:35 与 20:00 自动运行**，
+抓取全部持仓的最新行情，按权重加权计算组合当日涨跌幅并录入净值（昨收为交易所除权参考价，
+分红送转日自动复权），随后自动 commit + push，无需任何手动操作。
+
+原理与命令（本地亦可手动跑）：
+
+```bash
+python scripts/auto_update.py --push   # 抓行情 -> 算净值 -> 推送
+python scripts/auto_update.py --dry-run # 只看不算
+```
+
+特性：
+- 持仓数据驱动：调仓后自动适应新持仓（依据 `qt_code` 字段）
+- 幂等：当天已录入则跳过，`--force` 可覆盖
+- 休市日自动跳过（行情日期非当日）
+- 行情源自动降级（腾讯 -> 新浪），任一持仓失败则整体不更新（保证一致性）
+- 每日价格快照存档于 `snapshots` 字段
 
 ### 更新后直接上线
 

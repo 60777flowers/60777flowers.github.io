@@ -12,7 +12,8 @@
       "en_name": "CXMT",
       "ticker": "688825.SH",
       "weight": 1.0,
-      "note": "半导体存储"
+      "note": "半导体存储",
+      "qt_code": "sh688825"
     }
   ],
   "nav_history": [

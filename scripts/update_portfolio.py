@@ -101,19 +101,26 @@ def cmd_record(args, data):
 
 def cmd_holding(args, data):
     if not args.holdings:
-        sys.exit("错误: 请提供持仓，格式: 名称:权重，如 \"长鑫科技:1.0\"")
+        sys.exit("错误: 请提供持仓，格式: 名称:权重[:行情代码]，如 \"长鑫科技:1.0:sh688825\"")
     old = {h["name"]: h for h in data.get("holdings", [])}
     holdings = []
     for item in args.holdings:
+        parts = item.split(":")
         try:
-            name, weight = item.rsplit(":", 1)
-            name = name.strip()
-            weight = float(weight)
+            if len(parts) == 2:
+                name, weight = parts[0].strip(), float(parts[1])
+                qt_code = None
+            elif len(parts) == 3:
+                name, weight, qt_code = parts[0].strip(), float(parts[1]), parts[2].strip()
+            else:
+                raise ValueError
         except ValueError:
-            sys.exit(f'错误: 无法解析 "{item}"，正确格式: 名称:权重')
-        # 已存在的持仓保留 ticker/note 等字段，仅更新权重
+            sys.exit(f'错误: 无法解析 "{item}"，正确格式: 名称:权重[:行情代码]')
+        # 已存在的持仓保留 ticker/note/qt_code 等字段
         h = old.get(name, {"name": name})
         h["weight"] = weight
+        if qt_code:
+            h["qt_code"] = qt_code
         holdings.append(h)
     total = sum(h["weight"] for h in holdings)
     if abs(total - 1.0) > 0.001:
