@@ -291,3 +291,44 @@ a:hover img.social-svg, .social-links a:hover img.social-svg { transform: scale(
   .org-row { gap: 12px; }
   .org-date { margin-left: 0; width: 100%; }
 }
+
+/* ---------- 彩蛋：博客板块默认隐藏（临时功能，移除本段即恢复） ---------- */
+html:not(.blog-unlocked) #blog,
+html:not(.blog-unlocked) [data-blog-link],
+html:not(.blog-unlocked) .nav-links a[data-page="blog.html"],
+html:not(.blog-unlocked) .blog-content { display: none !important; }
+html.blog-unlocked .blog-lock { display: none !important; }
+
+.blog-lock { text-align: center; padding: 104px 0 48px; }
+.blog-lock .lock-icon { font-size: 2.6rem; color: var(--accent); margin-bottom: 18px; }
+
+/* ---------- 彩蛋：头像粒子特效 ---------- */
+.avatar-wrap {
+  position: relative; width: 112px; margin: 0 auto; cursor: pointer;
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+.avatar-wrap canvas {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; z-index: 3;
+}
+@keyframes avatarPop {
+  0% { transform: scale(1); }
+  32% { transform: scale(1.16) rotate(-3deg); }
+  66% { transform: scale(.96) rotate(2deg); }
+  100% { transform: scale(1); }
+}
+.avatar-wrap.avatar-burst .avatar {
+  animation: avatarPop .72s cubic-bezier(.2,.7,.3,1);
+  box-shadow: 0 0 30px 7px rgba(88,166,255,.45);
+}
+
+/* ---------- 彩蛋：解锁提示 ---------- */
+.egg-toast {
+  position: fixed; left: 50%; bottom: 34px; transform: translate(-50%, 18px);
+  background: var(--bg-card); border: 1px solid var(--accent); color: var(--text);
+  padding: 11px 22px; border-radius: 999px; font-size: .92rem; white-space: nowrap;
+  box-shadow: 0 12px 34px rgba(0,0,0,.4); opacity: 0; z-index: 999;
+  transition: opacity .32s ease, transform .32s cubic-bezier(.2,.7,.3,1);
+  pointer-events: none;
+}
+.egg-toast.show { opacity: 1; transform: translate(-50%, 0); }

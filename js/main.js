@@ -12,6 +12,28 @@
     localStorage.setItem("theme", next);
   };
 
+  // 彩蛋：博客板块解锁状态（sessionStorage 存于当前标签页，关掉即失效）
+  // 临时功能：删掉本段 + style.css 里对应的隐藏规则即可恢复常规展示
+  (function () {
+    var KEY = "blogUnlocked";
+    function unlocked() {
+      try { return sessionStorage.getItem(KEY) === "1"; } catch (e) { return false; }
+    }
+    if (unlocked()) document.documentElement.classList.add("blog-unlocked");
+
+    window.isBlogUnlocked = unlocked;
+    window.unlockBlog = function () {
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+      document.documentElement.classList.add("blog-unlocked");
+      // 板块隐藏期间 IntersectionObserver 观察不到它，解锁后手动补上 visible
+      var sec = document.getElementById("blog");
+      if (sec) {
+        sec.classList.add("visible");
+        sec.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("visible"); });
+      }
+    };
+  })();
+
   // 当前导航高亮 + 滚动渐入
   document.addEventListener("DOMContentLoaded", function () {
     const path = location.pathname.split("/").pop() || "index.html";
