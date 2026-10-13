@@ -7,7 +7,7 @@
 <meta name="description" content="杨凯盛的个人投资组合：持仓、净值走势与历史净值记录。">
 <link rel="icon" href="img/favicon.ico">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=20261013">
 </head>
 <body>
 
@@ -70,6 +70,7 @@
       </thead>
       <tbody id="hist-body"></tbody>
     </table>
+    <div class="period-returns" id="period-returns"></div>
   </div>
 
   <p class="note">
@@ -86,6 +87,69 @@
 
 <script src="js/main.js"></script>
 <script>
+var MAX_HIST_ROWS = 5;
+
+// ---------- 交易日处理 ----------
+// nav_history 只由 update_portfolio.py 写入，而自动录入前会校验「行情日期 == 当天」，
+// 因此这个序列本身就是一个「实证交易日历」：只有 A 股真实开市的日子才会产生记录，
+// 法定节假日、周末、临时休市全都天然被排除，不需要维护任何节假日表（那种表会过期）。
+// 所以「近 N 个交易日」= 取序列末尾 N 条。
+
+function pad2(v) { return (v < 10 ? "0" : "") + v; }
+
+// 日期回退：支持 日/月/年 三种单位，用 UTC 运算避免本地时区把日期串到前一天
+function shiftDate(iso, unit, n) {
+  var p = iso.split("-");
+  var y = +p[0], m = +p[1], d = +p[2];
+  if (unit === "d") {
+    var dt = new Date(Date.UTC(y, m - 1, d));
+    dt.setUTCDate(dt.getUTCDate() - n);
+    return dt.toISOString().slice(0, 10);
+  }
+  if (unit === "m") {
+    var t = y * 12 + (m - 1) - n;
+    var ny = Math.floor(t / 12), nm = (t % 12 + 12) % 12;   // 月份为 0-11
+    // 月末夹取：3-31 回退一个月应得 2-28/29，而不是溢出成 3-02
+    var lastDay = new Date(Date.UTC(ny, nm + 1, 0)).getUTCDate();
+    return ny + "-" + pad2(nm + 1) + "-" + pad2(Math.min(d, lastDay));
+  }
+  var ly = y - n;
+  var lastDay2 = new Date(Date.UTC(ly, m, 0)).getUTCDate();
+  return ly + "-" + pad2(m) + "-" + pad2(Math.min(d, lastDay2));
+}
+
+// 取「目标日期当天或之前」最近的一条净值；早于建仓日则返回 null
+function navAtOrBefore(hist, targetIso) {
+  var found = null;
+  for (var i = 0; i < hist.length; i++) {
+    if (hist[i].date <= targetIso) { found = hist[i]; } else { break; }
+  }
+  return found;
+}
+
+// 区间收益率（%）：口径同基金行业惯例 —— 按自然日/自然月回溯，起点取不晚于该日的最近净值
+function periodReturn(hist, unit, n) {
+  var latest = hist[hist.length - 1];
+  var base = navAtOrBefore(hist, shiftDate(latest.date, unit, n));
+  if (!base || base.date === latest.date) { return null; }
+  return (latest.nav / base.nav - 1) * 100;
+}
+
+function renderPeriodReturns(hist, elId) {
+  var items = [
+    ["近一周收益", "d", 7],
+    ["近一月收益", "m", 1],
+    ["近一年收益", "y", 1]
+  ];
+  document.getElementById(elId).innerHTML = items.map(function (it) {
+    var v = periodReturn(hist, it[1], it[2]);
+    var body = v === null
+      ? '<div class="pr-value pr-dim" title="组合成立时间不足该区间，暂无数据">—</div>'
+      : '<div class="pr-value ' + (v >= 0 ? "up" : "down") + '">' + fmtPct(v) + "</div>";
+    return '<div class="pr-item"><div class="pr-label">' + it[0] + "</div>" + body + "</div>";
+  }).join("");
+}
+
 fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   var hist = d.nav_history;
   var latest = hist[hist.length - 1];
@@ -119,29 +183,34 @@ fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json()
       "</span><span>" + (h.weight * 100).toFixed(1) + "%</span></div>";
   }).join("");
 
-  // 调仓记录（倒序，仅展示最近 6 条）
-  var rb = (d.rebalance_history || []).slice().reverse().slice(0, 6);
+  // 调仓记录（只展示最近一次）
+  var rb = (d.rebalance_history || []).slice(-1);
   document.getElementById("rebalance").innerHTML = rb.length
     ? rb.map(function (r) {
-        var flow = (r.from ? r.from : "—") + ' <span class="rb-arrow">→</span> ' +
+        var flow = (r.from ? r.from : "—") + '<span class="rb-arrow">→</span>' +
           ((r.to && r.to.length) ? r.to.join(" + ") : "—");
         return '<div class="rb-row"><span class="rb-date">' + r.date + "</span>" +
-          '<span class="rb-flow">' + flow + "</span>" +
-          (r.note ? '<span class="rb-tag">' + r.note + "</span>" : "") + "</div>";
+          '<span class="rb-flow">' + flow + "</span></div>";
       }).join("")
     : '<div class="rb-empty">暂无调仓记录</div>';
 
-  // 历史表（倒序）
+  // 历史表：最多展示最近 MAX_HIST_ROWS 个交易日（倒序）
+  var recent = hist.slice(-MAX_HIST_ROWS);
+  var offset = hist.length - recent.length;
   var rows = "";
-  for (var i = hist.length - 1; i >= 0; i--) {
-    var r = hist[i];
-    var dayChg = i > 0 ? (r.nav / hist[i - 1].nav - 1) * 100 : null;
+  for (var k = recent.length - 1; k >= 0; k--) {
+    var r = recent[k];
+    var gi = offset + k;
+    var dayChg = gi > 0 ? (r.nav / hist[gi - 1].nav - 1) * 100 : null;
     var baseChg = (r.nav / d.base_nav - 1) * 100;
     rows += "<tr><td>" + r.date + "</td><td>" + fmtNav(r.nav) + "</td><td>" +
       (dayChg === null ? "—" : '<span class="' + (dayChg >= 0 ? "up" : "down") + '">' + fmtPct(dayChg) + "</span>") +
       '</td><td><span class="' + (baseChg >= 0 ? "up" : "down") + '">' + fmtPct(baseChg) + "</span></td></tr>";
   }
   document.getElementById("hist-body").innerHTML = rows;
+
+  // 区间收益：近一周 / 近一月 / 近一年
+  renderPeriodReturns(hist, "period-returns");
 
   // SVG 净值曲线
   drawChart(hist);
