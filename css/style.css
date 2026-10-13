@@ -136,6 +136,21 @@ a:hover { text-decoration: underline; }
 }
 .holding-row:last-child { border-bottom: none; }
 
+/* 调仓记录 */
+.rb-row {
+  display: flex; align-items: center; gap: 14px; padding: 12px 4px;
+  border-bottom: 1px dashed var(--border); font-size: .95rem; flex-wrap: wrap;
+}
+.rb-row:last-child { border-bottom: none; }
+.rb-date { color: var(--text-dim); font-variant-numeric: tabular-nums; min-width: 96px; }
+.rb-flow { flex: 1; min-width: 200px; }
+.rb-arrow { color: var(--accent); margin: 0 4px; }
+.rb-tag {
+  font-size: .78rem; color: var(--accent); border: 1px solid var(--accent);
+  border-radius: 999px; padding: 2px 10px; opacity: .85; white-space: nowrap;
+}
+.rb-empty { color: var(--text-dim); font-size: .95rem; padding: 12px 4px; }
+
 /* ---------- 通用页面 ---------- */
 .page-title { font-size: 1.9rem; margin: 48px 0 8px; }
 .page-sub { color: var(--text-dim); margin-bottom: 32px; }

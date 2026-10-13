@@ -40,37 +40,12 @@
       "price": 48.34
     }
   ],
-  "holding_history": [
+  "rebalance_history": [
     {
-      "changed_at": "2026-10-12T12:53:24",
-      "holdings": [
-        {
-          "name": "长鑫科技",
-          "en_name": "CXMT",
-          "ticker": "688825.SH",
-          "weight": 1.0,
-          "note": "半导体存储",
-          "qt_code": "sh688825"
-        }
-      ]
-    },
-    {
-      "changed_at": "2026-10-12T12:53:25",
-      "holdings": [
-        {
-          "name": "长鑫科技",
-          "en_name": "CXMT",
-          "ticker": "688825.SH",
-          "weight": 0.5,
-          "note": "半导体存储",
-          "qt_code": "sh688825"
-        },
-        {
-          "name": "贵州茅台",
-          "weight": 0.5,
-          "qt_code": "sh600519"
-        }
-      ]
+      "date": "2026-10-12",
+      "from": "现金",
+      "to": ["长鑫科技"],
+      "note": "组合建立"
     }
   ],
   "snapshots": [

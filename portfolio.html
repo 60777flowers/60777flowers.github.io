@@ -58,6 +58,11 @@
   </div>
 
   <div class="chart-wrap reveal d2">
+    <h3><i class="fas fa-right-left"></i> 最新调仓记录</h3>
+    <div id="rebalance"></div>
+  </div>
+
+  <div class="chart-wrap reveal d2">
     <h3><i class="fas fa-table-list"></i> 历史净值</h3>
     <table class="hist">
       <thead>
@@ -113,6 +118,18 @@ fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json()
       (h.note ? ' <span style="color:var(--text-dim);font-size:.85rem">' + h.note + "</span>" : "") +
       "</span><span>" + (h.weight * 100).toFixed(1) + "%</span></div>";
   }).join("");
+
+  // 调仓记录（倒序，仅展示最近 6 条）
+  var rb = (d.rebalance_history || []).slice().reverse().slice(0, 6);
+  document.getElementById("rebalance").innerHTML = rb.length
+    ? rb.map(function (r) {
+        var flow = (r.from ? r.from : "—") + ' <span class="rb-arrow">→</span> ' +
+          ((r.to && r.to.length) ? r.to.join(" + ") : "—");
+        return '<div class="rb-row"><span class="rb-date">' + r.date + "</span>" +
+          '<span class="rb-flow">' + flow + "</span>" +
+          (r.note ? '<span class="rb-tag">' + r.note + "</span>" : "") + "</div>";
+      }).join("")
+    : '<div class="rb-empty">暂无调仓记录</div>';
 
   // 历史表（倒序）
   var rows = "";
