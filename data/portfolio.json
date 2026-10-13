@@ -5,7 +5,7 @@
   "base_price": 51.0,
   "base_price_note": "2026-10-09 收盘价",
   "currency": "CNY",
-  "updated_at": "2026-10-12",
+  "updated_at": "2026-10-13",
   "holdings": [
     {
       "name": "长鑫科技",
@@ -24,6 +24,10 @@
     {
       "date": "2026-10-12",
       "nav": 0.9478
+    },
+    {
+      "date": "2026-10-13",
+      "nav": 0.9213
     }
   ],
   "price_history": [
@@ -74,6 +78,22 @@
       "date": "2026-10-12",
       "prices": {
         "长鑫科技": 48.34
+      },
+      "holdings": [
+        {
+          "name": "长鑫科技",
+          "en_name": "CXMT",
+          "ticker": "688825.SH",
+          "weight": 1.0,
+          "note": "半导体存储",
+          "qt_code": "sh688825"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-13",
+      "prices": {
+        "长鑫科技": 46.99
       },
       "holdings": [
         {
