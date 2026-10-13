@@ -69,9 +69,7 @@
 
   <p class="note">
     <i class="fas fa-circle-info"></i>
-    数据接口：<code>data/portfolio.json</code>；更新方式（推荐按收盘价录入，自动处理分红送转复权）：
-    <code>python scripts/update_portfolio.py record --price 51.88</code>，除权日用 <code>--dividend</code> / <code>--split</code>，
-    详见仓库 README。数据由 <span id="pf-updated"></span> 更新。
+    最后更新：<span id="pf-updated"></span> · 每个交易日收盘后更新
   </p>
 
   <div style="margin:32px 0 56px"><a href="index.html">← 返回首页</a></div>
@@ -86,10 +84,7 @@
 fetch("data/portfolio.json?t=" + Date.now()).then(function (r) { return r.json(); }).then(function (d) {
   var hist = d.nav_history;
   var latest = hist[hist.length - 1];
-  document.getElementById("pf-sub").textContent = "基期 " + d.base_date + " · 净值 " + fmtNav(d.base_nav) +
-    (d.base_price != null
-      ? " 对应 " + (d.base_price_note ? d.base_price_note + " " : "") + Number(d.base_price).toFixed(2) + " 元"
-      : "") +
+  document.getElementById("pf-sub").textContent = "基期 " + d.base_date + "（净值 " + fmtNav(d.base_nav) + "）" +
     " · 复权计算 · 不构成投资建议";
   document.getElementById("pf-nav").textContent = fmtNav(latest.nav);
   document.getElementById("pf-date").textContent = latest.date;

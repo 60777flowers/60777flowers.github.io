@@ -3,7 +3,7 @@
   "base_date": "2026-10-09",
   "base_nav": 1.0,
   "base_price": 51.0,
-  "base_price_note": "2026-10-09 收盘价",
+  "base_price_note": "基期唯一持仓（长鑫科技）2026-10-09 建仓价，仅供存档；组合会调仓，不作为前端计价说明",
   "currency": "CNY",
   "updated_at": "2026-10-13",
   "holdings": [
