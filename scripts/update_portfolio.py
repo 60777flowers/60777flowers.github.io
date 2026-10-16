@@ -31,6 +31,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DATA_FILE = ROOT / "data" / "portfolio.json"
+BJT = datetime.timezone(datetime.timedelta(hours=8))
+
+
+def bj_today():
+    """北京时间今天的日期。GitHub runner 是 UTC 时区，直接用 date.today() 会差 8 小时。"""
+    return datetime.datetime.now(datetime.timezone.utc).astimezone(BJT).date().isoformat()
 
 
 def load_data():
@@ -47,7 +53,7 @@ def save_data(data):
 
 
 def cmd_record(args, data):
-    today = args.date or datetime.date.today().isoformat()
+    today = args.date or bj_today()
     hist = data["nav_history"]
     prices = data.get("price_history", [])
 
@@ -133,7 +139,7 @@ def cmd_holding(args, data):
     if abs(total - 1.0) > 0.001:
         print(f"[警告] 持仓权重之和为 {total:.4f}，不等于 1，请确认是否故意留出现金/杠杆敞口")
     data["holdings"] = holdings
-    data["updated_at"] = datetime.date.today().isoformat()
+    data["updated_at"] = bj_today()
     save_data(data)
     print("[OK] 持仓已更新:")
     for h in holdings:
@@ -143,7 +149,7 @@ def cmd_holding(args, data):
 def push():
     cmds = [
         ["git", "add", str(DATA_FILE.relative_to(ROOT))],
-        ["git", "commit", "-m", f"update portfolio {datetime.date.today().isoformat()}"],
+        ["git", "commit", "-m", f"update portfolio {bj_today()}"],
         ["git", "push"],
     ]
     for c in cmds:
