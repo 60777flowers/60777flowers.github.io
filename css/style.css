@@ -332,3 +332,16 @@ html.blog-unlocked .blog-lock { display: none !important; }
   pointer-events: none;
 }
 .egg-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+/* ---------- 讨论区 ---------- */
+.discussion-page { max-width: 820px; margin: 0 auto; }
+.giscus-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 22px 24px;
+}
+.giscus-hint {
+  color: var(--text-dim); font-size: .88rem; line-height: 1.7;
+  padding-bottom: 16px; margin-bottom: 18px; border-bottom: 1px dashed var(--border);
+}
+.giscus-hint i { color: var(--accent); margin-right: 6px; }
+.giscus-hint a { color: var(--accent); }

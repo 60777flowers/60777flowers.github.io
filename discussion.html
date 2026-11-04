@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>讨论区 | 杨凯盛</title>
+<meta name="description" content="杨凯盛的博客讨论区：文章之外，想到什么聊什么。">
+<link rel="icon" href="img/favicon.ico">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css">
+<link rel="stylesheet" href="css/style.css?v=20261104a">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="nav-logo" href="index.html">杨凯盛</a>
+    <div class="nav-links">
+      <a data-page="index.html" href="index.html">首页</a>
+      <a data-page="about.html" href="about.html">关于我</a>
+      <a data-page="blog.html" href="blog.html">博客文章</a>
+      <a data-page="portfolio.html" href="portfolio.html">投资组合</a>
+      <a data-page="discussion.html" href="discussion.html">讨论区</a>
+      <button class="theme-toggle" onclick="toggleTheme()" title="切换主题"><i class="fas fa-adjust"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main class="container discussion-page">
+  <h1 class="page-title">讨论区</h1>
+  <p class="page-sub">文章之外的地方 —— 想到什么聊什么，不用非得有个主题。</p>
+
+  <div class="giscus-card">
+    <div class="giscus-hint">
+      <i class="fas fa-comments"></i>
+      用 GitHub 账号登录即可评论，首次会弹窗授权 giscus 代你发帖。
+      不想登录也没关系，可以直接去
+      <a href="https://github.com/60777flowers/60777flowers.github.io/discussions" target="_blank" rel="noopener">GitHub Discussions</a>
+      里发帖，这里能看到同一个话题。
+    </div>
+    <div class="giscus" id="giscus-container"></div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">© 2022 - <span id="year"></span> 杨凯盛 · Powered by GitHub Pages</div>
+</footer>
+
+<script src="js/main.js"></script>
+<script>
+/* 讨论区：giscus（GitHub Discussions 驱动）
+ * 全站共用一个讨论串，term 固定为 "讨论区"；
+ * 若以后想给每篇文章单独开评论区，把 term 换成文章 id 即可。 */
+(function () {
+  var GISCUS = {
+    repo: "60777flowers/60777flowers.github.io",
+    repoId: "R_kgDOGacE0w",
+    category: "Announcements",
+    categoryId: "DIC_kwDOGacE084DKWci",
+    term: "讨论区"
+  };
+
+  function currentTheme() {
+    return document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+  }
+
+  var s = document.createElement("script");
+  s.src = "https://giscus.app/client.js";
+  s.async = true;
+  s.crossOrigin = "anonymous";
+  s.setAttribute("data-repo", GISCUS.repo);
+  s.setAttribute("data-repo-id", GISCUS.repoId);
+  s.setAttribute("data-category", GISCUS.category);
+  s.setAttribute("data-category-id", GISCUS.categoryId);
+  s.setAttribute("data-mapping", "specific");
+  s.setAttribute("data-term", GISCUS.term);
+  s.setAttribute("data-strict", "0");
+  s.setAttribute("data-reactions-enabled", "1");
+  s.setAttribute("data-emit-metadata", "0");
+  s.setAttribute("data-input-position", "bottom");
+  s.setAttribute("data-theme", currentTheme());
+  s.setAttribute("data-lang", "zh-CN");
+  s.setAttribute("data-loading", "lazy");
+  document.getElementById("giscus-container").appendChild(s);
+
+  /* 跟随站点深浅色切换（giscus 官方 ISetConfigMessage 接口） */
+  var siteToggle = window.toggleTheme;
+  window.toggleTheme = function () {
+    siteToggle();
+    var f = document.querySelector("iframe.giscus-frame");
+    if (f) {
+      f.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: currentTheme() } } },
+        "https://giscus.app"
+      );
+    }
+  };
+})();
+</script>
+</body>
+</html>

@@ -11,6 +11,26 @@ GitHub Pages 静态博客，纯 HTML/CSS/JS，无构建依赖。
 | `blog.html` | 博客文章列表 |
 | `post.html?id=<文章id>` | 文章详情（数据在 `js/data.js`） |
 | `portfolio.html` | 投资组合：净值走势、持仓、历史净值 |
+| `discussion.html` | 讨论区：giscus 评论（数据存 GitHub Discussions） |
+
+## 讨论区（评论）
+
+`discussion.html` 用 [giscus](https://giscus.app) 承载评论，**数据存在本仓库的 GitHub Discussions 里**，
+不依赖任何自建服务；删掉页面上的那段脚本即可下线，历史评论仍留在 Discussions 中。
+
+| 配置 | 值 |
+|------|-----|
+| `data-repo` / `data-repo-id` | `60777flowers/60777flowers.github.io` / `R_kgDOGacE0w` |
+| `data-category` / `data-category-id` | `Announcements` / `DIC_kwDOGacE084DKWci` |
+| `data-mapping` / `data-term` | `specific` / `讨论区`（全站共用一条讨论串） |
+
+前置条件：仓库已开启 Discussions，且 [giscus App](https://github.com/apps/giscus) 已安装到本仓库。
+缺任何一项，页面上的评论区都会提示未安装。
+
+- **想给每篇文章单独开评论区**：在 `post.html` 里照抄同一段脚本，把 `data-term` 换成文章 `id` 即可
+- **想改名/加分类**：在仓库 Settings → Discussions 里管理（当前借用 `Announcements` 分类，
+  因为 GitHub 的 API 不开放"新建分类"，只能在网页上操作）
+- **评论审核**：直接在 Discussions 里删帖/锁帖，管理员还会收到通知
 
 ## 写新文章
 
